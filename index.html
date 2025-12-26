@@ -738,10 +738,12 @@ if (!track || slides.length === 0) {
     })
   }
 
-  setInterval(() => {
-    slideIndex = (slideIndex + 1) % slides.length
-    goSlide(slideIndex)
-  }, 3000)
+  function autoSlide(){
+  slideIndex = (slideIndex + 1) % slides.length
+  goSlide(slideIndex)
+  setTimeout(autoSlide, 3000)
+}
+autoSlide()
  }
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession()
