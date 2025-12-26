@@ -716,28 +716,41 @@ BANNER SLIDE
 ====================== */
 let slideIndex = 0
 const track = document.getElementById('bannerTrack')
-const slides = document.querySelectorAll('.banner-slide')
-const dotsBox = document.getElementById('dots')
+document.addEventListener("DOMContentLoaded", () => {
 
-slides.forEach((_,i)=>{
-  const d=document.createElement('div')
-  d.className='dot'+(i===0?' active':'')
-  d.onclick=()=>goSlide(i)
-  dotsBox.appendChild(d)
-})
+  let slideIndex = 0
+  const track = document.getElementById('bannerTrack')
+  const slides = document.querySelectorAll('.banner-slide')
+  const dotsBox = document.getElementById('dots')
 
-function goSlide(i){
-  slideIndex=i
-  track.style.transform=`translateX(-${i*100}%)`
-  document.querySelectorAll('.dot').forEach((d,idx)=>{
-    d.classList.toggle('active',idx===i)
+  if (!track || slides.length === 0) {
+    console.log("❌ banner ยังไม่พร้อม")
+    return
+  }
+
+  dotsBox.innerHTML = ''
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div')
+    d.className = 'dot' + (i === 0 ? ' active' : '')
+    d.onclick = () => goSlide(i)
+    dotsBox.appendChild(d)
   })
-}
- 
-SAFE_INTERVAL(() => {
-  slideIndex = (slideIndex + 1) % slides.length
-  goSlide(slideIndex)
-}, 3000)
+
+  function goSlide(i) {
+    slideIndex = i
+    track.style.transform = `translateX(-${i * 100}%)`
+    document.querySelectorAll('.dot').forEach((d, idx) => {
+      d.classList.toggle('active', idx === i)
+    })
+  }
+
+  setInterval(() => {
+    slideIndex = (slideIndex + 1) % slides.length
+    goSlide(slideIndex)
+  }, 3000)
+
+})
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession()
   if(data.session?.user){
