@@ -709,6 +709,8 @@ function closeMenu(){
   menu.classList.remove('active')
   document.getElementById('menuOverlay').style.display='none'
 }
+ const SAFE_INTERVAL = window.setInterval.bind(window)
+ alert(typeof window.setInterval)
 /* ======================
 BANNER SLIDE
 ====================== */
@@ -732,7 +734,7 @@ function goSlide(i){
   })
 }
  
-setInterval(() => {
+SAFE_INTERVAL(() => {
   slideIndex = (slideIndex + 1) % slides.length
   goSlide(slideIndex)
 }, 3000)
