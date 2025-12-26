@@ -731,13 +731,11 @@ function goSlide(i){
     d.classList.toggle('active',idx===i)
   })
 }
-
-const _setInterval = window.setInterval;
-
-_setInterval(()=>{
+ 
+setInterval(() => {
   slideIndex = (slideIndex + 1) % slides.length
   goSlide(slideIndex)
-},3000)
+}, 3000)
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession()
   if(data.session?.user){
