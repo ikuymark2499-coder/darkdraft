@@ -732,10 +732,10 @@ function goSlide(i){
   })
 }
 
-setInterval(()=>{
-  slideIndex=(slideIndex+1)%slides.length
+window.setInterval(()=>{
+  slideIndex = (slideIndex + 1) % slides.length
   goSlide(slideIndex)
-},3000)
+}, 3000)
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession()
   if(data.session?.user){
