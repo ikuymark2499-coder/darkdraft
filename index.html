@@ -1,0 +1,793 @@
+<!DOCTYPE html>   
+ <html lang="th">    
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<title>DD WEB SHOP - Dark Draft</title>  <style>    
+*{box-sizing:border-box;font-family:system-ui,-apple-system}    
+body{margin:0;background:#000;color:#fff}    /* ===== เพิ่มตามที่ขอ ===== */
+.right{
+font-size:20px;
+cursor:pointer;
+}
+/* ===================== */
+
+nav{
+position:fixed;
+top:0;
+right:-260px;
+width:260px;
+height:100vh;
+padding:20px;
+padding-top:72px;
+background:#0f0f0f;
+transition:.3s;
+z-index:50;
+  overflow-y:auto;   /* 👈 ให้เลื่อนเมนูได้ */
+  -webkit-overflow-scrolling: touch;
+
+}
+
+nav.active{
+right:0;
+}
+
+nav button{
+width:100%;margin-bottom:10px;padding:10px;
+background:#151515;color:#fff;border:1px solid rgba(255,255,255,.08);
+border-radius:10px;text-align:left
+}
+
+section{padding:16px;display:none}
+section.active{display:block}
+
+.banner{
+position:relative;height:140px;overflow:hidden;
+border-radius:12px;margin-bottom:20px;
+}
+.banner-track{display:flex;height:100%}
+.banner-slide{
+min-width:100%;
+background:#111;
+display:flex;align-items:center;justify-content:center;
+color:#aaa;font-size:18px;font-weight:600
+}
+
+.dots{
+position:absolute;bottom:8px;left:50%;
+transform:translateX(-50%);
+display:flex;gap:6px
+}
+.dot{width:8px;height:8px;border-radius:50%;background:#444}
+.dot.active{background:#fff}
+
+.stats{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:10px;margin-top:20px
+}
+.stat{
+background:#0f0f0f;border-radius:12px;
+padding:12px;text-align:center;
+border:1px solid rgba(255,255,255,.06)
+}
+.stat b{font-size:18px}
+
+.categories button{
+margin-right:8px;margin-bottom:10px;
+padding:8px 14px;border-radius:8px;
+border:1px solid rgba(255,255,255,.1);
+background:#111;color:#fff
+}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{
+background:#0f0f0f;border-radius:14px;padding:12px;
+border:1px solid rgba(255,255,255,.06)
+}
+.img{
+height:80px;background:#111;border-radius:10px;
+display:flex;align-items:center;justify-content:center;color:#777
+}
+
+.price{color:#fff;font-weight:700}
+
+.buy{
+margin-top:8px;width:100%;
+background:#fff;color:#000;border:none;
+padding:10px;border-radius:10px;font-weight:600
+}
+
+input{
+width:100%;padding:10px;margin-bottom:10px;
+border-radius:8px;border:1px solid rgba(255,255,255,.1);
+background:#0f0f0f;color:#fff
+}
+
+.history-item{
+background:#0f0f0f;border-radius:10px;
+padding:10px;margin-bottom:8px;
+border:1px solid rgba(255,255,255,.06)
+}
+#pointBox{
+position:relative;   /* ← สำคัญ */
+display:flex;
+align-items:center;
+gap:6px;
+padding:6px 14px;
+
+background:#1a1a1a;
+border:1px solid #fff;
+border-radius:9999px;
+
+color:#fff;
+font-weight:700;
+font-size:14px;
+}
+
+#pointBox .coin{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:18px;
+height:18px;
+border-radius:50%;
+background:#2a2a2a;
+border:1px solid rgba(255,255,255,.6);
+color:#fff;
+font-size:12px;
+}
+#topRight{
+position:absolute;
+top:10px;
+right:10px;
+display:flex;
+gap:8px;
+z-index:30;
+}
+#menuBtn{
+width:34px;
+height:34px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#1a1a1a;
+border:1px solid #fff;
+border-radius:50%;
+font-size:18px;
+cursor:pointer;
+}
+header{
+position:relative;
+height:64px;   /* เพิ่มนิดเดียว */
+display:block;  /* ไม่ต้อง flex แล้ว */
+z-index:30;
+}
+.banner{
+margin-top:8px;   /* หรือ 16px ถ้ายังชิด */
+}
+.left{
+position:absolute;
+top:12px;
+left:16px;
+z-index:30;
+
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:4px;
+
+pointer-events: auto; /* กันเผลอคลิกตอนเปิดเมนู */
+}
+
+.title-logo{
+width:56px;
+opacity:.95;
+}
+
+.title-text{
+font-weight:800;
+font-size:15px;
+line-height:1.1;     /* ทำให้ชื่อกับโลโก้ดูเป็นก้อนเดียว */
+}
+body.menu-open #topRight{
+pointer-events:none;
+opacity:.4;
+}
+.hide-point #pointBox{ display:none }
+.auth-wrap{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at top,#111,#000);
+}
+
+.auth-card{
+width:90%;
+max-width:360px;
+background:#0f0f0f;
+border:1px solid #222;
+border-radius:14px;
+padding:22px;
+box-shadow:0 0 30px rgba(0,0,0,.8);
+}
+
+.auth-card h1{
+margin:0;
+font-size:20px;
+}
+
+.auth-card .sub{
+opacity:.6;
+margin-bottom:16px;
+}
+
+.auth-card input{
+width:100%;
+margin-bottom:10px;
+padding:12px;
+border-radius:10px;
+border:1px solid #222;
+background:#111;
+color:#fff;
+}
+
+.auth-card button{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:none;
+background:#ff5a5a;
+color:#000;
+font-weight:bold;
+}
+
+button, a, input {
+pointer-events:auto !important;
+}
+
+#menuBtn{
+  z-index:9999;
+}
+
+.banner button{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:100;
+}
+#menuOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:40;
+}
+nav{
+  z-index:50;
+}
+
+</style>
+
+</head>    
+<body>    
+<header>  
+  <div id="topRight">  
+    <div id="pointBox">  
+      <span id="myPoint">0</span>  
+      <span class="coin">🪙</span>  
+    </div>  
+    <div id="menuBtn" onclick="toggleMenu()">≡</div>  
+  </div>    <div class="left">  
+    <div class="title-text">DD WEB SHOP</div>  
+    <img src="logo.png" class="title-logo">  
+  </div>  
+</header>   
+  <nav id="menu">    
+  <button onclick="go('home')">หน้าแรก</button>    
+  <button onclick="go('category')">หมวดเว็บ</button>    
+  <button onclick="go('history')">ประวัติการสั่งงาน</button>    
+  <button onclick="go('topup')">ชำระเงิน</button>    
+  <button onclick="openAuth()">สมัคร / ล็อกอิน</button>  
+  
+  <button onclick="testInsert()">TEST INSERT</button>
+  
+  <button onclick="go('contact')">ติดต่อ</button>    
+  <button id="logoutBtn"        
+    onclick="logout()">ออกจากระบบ</button>  
+  <button id="adminBtn" onclick="go('admin')" style="display:none">แอดมิน</button>    
+</nav>    
+<div id="menuOverlay" onclick="closeMenu()"></div>
+<div id="notifyPopup" style="    
+display:none;    
+position:fixed;    
+top:50%;    
+left:50%;    
+transform:translate(-50%,-50%);    
+background:#111;    
+color:#fff;    
+padding:20px;    
+border-radius:12px;    
+box-shadow:0 0 30px rgba(0,0,0,.6);    
+z-index:9999;    
+text-align:center;    
+">    
+  <div id="notifyText"></div>    
+  <button onclick="closeNotify()" style="    
+  margin-top:15px;    
+  padding:8px 16px;    
+  border:none;    
+  border-radius:8px;    
+  background:#a00;    
+  color:#fff;    
+  ">โอเค</button>    
+</div>  <section id="home" class="active">    
+  <div class="banner" id="banner">    
+    <div class="banner-track" id="bannerTrack">    
+      <div class="banner-slide">Web UI Template</div>    
+      <div class="banner-slide">Landing Page</div>    
+      <div class="banner-slide">Shop Website</div>    
+    </div>    
+    
+    <div class="dots" id="dots"></div>    
+  </div>    <h3>เว็บแนะนำ</h3>    
+  <div class="grid" id="productGrid"></div>    <div class="stats">    
+    <div class="stat">ผลงาน<br><b>12</b></div>    
+    <div class="stat">ขายแล้ว<br><b>0</b></div>    
+    <div class="stat">ลูกค้า<br><b>0</b></div>    
+  </div>    
+</section>    
+<section id="category">    
+  <h3>เลือกหมวดเว็บ</h3>    
+  <div class="categories">    
+    <button onclick="filter('all')">ทั้งหมด</button>    
+    <button onclick="filter('shop')">เว็บขายของ</button>    
+    <button onclick="filter('landing')">Landing Page</button>    
+  </div>    
+  <div class="grid" id="catGrid"></div>    
+</section>   
+<!-- SEND WORK MODAL -->
+<div id="sendWorkModal" style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.7);
+z-index:9999;
+align-items:center;
+justify-content:center;
+pointer-events:none;   /* 🔥 สำคัญ */
+">
+  <div style="
+  background:#111;
+  padding:20px;
+  border-radius:14px;
+  width:90%;
+  max-width:320px;
+  pointer-events:auto; /* ให้คลิกข้างในได้ */
+  ">
+    <h3 style="margin-top:0">📦 ส่งงาน</h3>
+    <input id="workLinkInput" placeholder="วางลิงก์งานที่นี่">
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button class="buy" onclick="confirmSendWork()">ส่งงาน</button>
+      <button class="buy" style="background:#333;color:#fff" onclick="closeSendWork()">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+ <section id="history">    
+  <h3>ประวัติการสั่งงาน</h3>    
+  <div id="historyList"></div>      <h4 style="margin-top:20px">สถานะการชำระเงิน</h4>    
+</section>  <section id="topup">    
+  <h3>ชำระเงิน</h3>    
+  <input id="topupLink" placeholder="วางลิงก์ซองอั่งเปาที่นี่">    
+  <button class="buy" onclick="sendTopup()">แจ้งชำระเงิน</button>    
+</section>    
+<section id="auth">  
+  <div class="auth-wrap">  <!-- REGISTER -->  
+<div class="auth-card" id="registerBox">  
+  <h1>DD WEB SHOP</h1>  
+  <p class="sub">สมัครสมาชิก</p>  
+
+  <input id="regUser" placeholder="ชื่อผู้ใช้">  
+  <input id="regPass" type="password" placeholder="รหัสผ่าน">  
+
+  <button onclick="register()">สมัครเลย</button>  
+
+  <p style="margin-top:14px;font-size:13px;opacity:.7">  
+    มีบัญชีแล้ว?  
+    <span style="color:#ff5a5a;cursor:pointer" onclick="showLogin()">  
+      เข้าสู่ระบบ  
+    </span>  
+  </p>  
+</div>  
+
+<!-- LOGIN -->  
+<div class="auth-card" id="loginBox" style="display:none">  
+  <h1>DD WEB SHOP</h1>  
+  <p class="sub">เข้าสู่ระบบ</p>  
+
+  <input id="loginUser" placeholder="ชื่อผู้ใช้">  
+  <input id="loginPass" type="password" placeholder="รหัสผ่าน">  
+
+  <button onclick="login()">เข้าสู่ระบบ</button>  
+
+  <p style="margin-top:14px;font-size:13px;opacity:.7">  
+    ยังไม่มีบัญชี?  
+    <span style="color:#ff5a5a;cursor:pointer" onclick="showRegister()">  
+      สมัครสมาชิก  
+    </span>  
+  </p>  
+</div>  
+
+<div id="authStatus" style="margin-top:12px;color:#0f0"></div>
+
+  </div>  
+</section>  
+<section id="contact">    
+  <h3>ติดต่อแอดมิน</h3>    
+  <a href="https://line.me/ti/p/~@darkdraft" target="_blank" style="text-decoration:none">    
+    <div class="buy" style="background:#06c755;margin-bottom:10px">LINE : @darkdraft</div>    
+  </a>    
+  <a href="https://www.facebook.com/share/1NTP82Mywz/" target="_blank" style="text-decoration:none">    
+    <div class="buy" style="background:#1877f2">FACEBOOK : Dark Draft</div>    
+  </a>    
+</section>    
+<section id="admin">    
+  <h3>หลังบ้านแอดมิน</h3>   
+  <div id="adminPoint"></div>  
+  <div id="topupList"></div>    
+</section>   
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://sfnrtzjrbyhrwcuansbg.supabase.co"
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmbnJ0empyYnlocndjdWFuc2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2NTE4NjYsImV4cCI6MjA4MjIyNzg2Nn0.EdoCe7UMyBz5BmbjVSwmb1ZMGROCbmekUzIZrpFJjEM"
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+)
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session?.user) {
+    current = session.user.id
+    localStorage.setItem("login", current)
+    document.getElementById('logoutBtn').style.display = "inline-block"
+    renderPoint()
+  } else {
+    localStorage.removeItem("login")
+    current = ''
+    document.getElementById('logoutBtn').style.display = "none"
+    go('home')
+  }
+})
+</script>
+
+<script>
+/* ======================
+GLOBAL STATE
+====================== */
+let current = localStorage.getItem('login') || ''
+let points = JSON.parse(localStorage.getItem('points') || '{}')
+let sendWorkIndex = null
+
+const menu = document.getElementById('menu')
+const productGrid = document.getElementById('productGrid')
+const catGrid = document.getElementById('catGrid')
+const historyList = document.getElementById('historyList')
+const topupList = document.getElementById('topupList')
+const adminBtn = document.getElementById('adminBtn')
+const logoutBtn = document.getElementById('logoutBtn')
+
+const registerBox = document.getElementById('registerBox')
+const loginBox = document.getElementById('loginBox')
+const authStatus = document.getElementById('authStatus')
+const regUser = document.getElementById('regUser')
+const regPass = document.getElementById('regPass')
+const loginUser = document.getElementById('loginUser')
+const loginPass = document.getElementById('loginPass')
+/* ======================
+INIT
+====================== */
+if(!current){
+  logoutBtn.style.display='none'
+}else{
+  renderPoint()
+}
+if(current==='admin') adminBtn.style.display='block'
+
+/* ======================
+DATA
+====================== */
+const products = [
+  {id:'A',name:'เว็บขายรหัส V1',price:499,type:'shop'},
+  {id:'B',name:'เว็บร้านค้า Dark UI',price:799,type:'shop'},
+  {id:'C',name:'Landing Page โปรไฟล์',price:299,type:'landing'},
+  {id:'D',name:'เว็บขายของ UI โหด',price:999,type:'shop'}
+]
+
+/* ======================
+UTIL STORAGE
+====================== */
+const getOrders = u => JSON.parse(localStorage.getItem('orders_'+u)||'[]')
+const saveOrders = (u,d)=>localStorage.setItem('orders_'+u,JSON.stringify(d))
+const getAllOrders = ()=>JSON.parse(localStorage.getItem('orders_all')||'[]')
+const saveAllOrders = d=>localStorage.setItem('orders_all',JSON.stringify(d))
+const savePoints = ()=>localStorage.setItem('points',JSON.stringify(points))
+
+/* ======================
+POINT
+====================== */
+function renderPoint(){
+  document.getElementById('myPoint').innerText = points[current] ?? 0
+}
+
+/* ======================
+SHOP
+====================== */
+function render(){
+  productGrid.innerHTML=''
+  products.forEach(p=>{
+    productGrid.innerHTML+=`
+      <div class="card">
+        <div class="img">Web UI</div>
+        <b>${p.name}</b><br>
+        <span class="price">${p.price} บาท</span>
+        <button class="buy" onclick="buy('${p.id}')">สั่งงาน</button>
+      </div>`
+  })
+}
+render()
+
+async function buy(id){
+  if(!current) return alert('ล็อกอินก่อน')
+
+  const { data } = await supabaseClient.auth.getSession()
+const user = data.session?.user
+if(!user) return alert('ยังไม่ล็อกอินจริง')
+
+  const p = products.find(x=>x.id===id)
+
+  const { error } = await supabaseClient
+    .from('orders')
+    .insert({
+      user_id: user.id,
+      product: p.name,
+      price: p.price,
+      status: 'รอดำเนินการ',
+      work_link: ''
+    })
+
+  if(error){
+    alert(error.message)
+  }else{
+    alert('สั่งงานสำเร็จ เข้า DB แล้ว 🔥')
+  }
+}
+
+/* ======================
+HISTORY
+====================== */
+async function renderHistoryForUser(){
+  historyList.innerHTML=''
+
+  const { data: sessionData } = await supabaseClient.auth.getSession()
+  const user = sessionData.session?.user
+  if(!user) return
+
+  const { data: orders, error } = await supabaseClient
+    .from('orders')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending:false })
+
+  if(error){
+    historyList.innerHTML = 'โหลดไม่ได้'
+    return
+  }
+
+  if(!orders.length){
+    historyList.innerHTML = '<div class="history-item">ยังไม่มีออเดอร์</div>'
+    return
+  }
+
+  orders.forEach(o=>{
+    historyList.innerHTML += `
+      <div class="history-item">
+        ${o.product}<br>
+        สถานะ: <b>${o.status}</b><br>
+        ราคา: ${o.price}<br>
+        ${
+          o.work_link
+          ? `<a href="${o.work_link}" target="_blank">🔗 เปิดงาน</a>`
+          : '⏳ รอดำเนินการ'
+        }
+      </div>
+    `
+  })
+}
+
+/* ======================
+AUTH
+====================== */
+function showLogin(){
+  registerBox.style.display='none'
+  loginBox.style.display='block'
+  authStatus.innerText=''
+}
+function showRegister(){
+  loginBox.style.display='none'
+  registerBox.style.display='block'
+  authStatus.innerText=''
+}
+
+async function register(){
+  const username = regUser.value.trim()
+  const password = regPass.value.trim()
+  if(!username || !password){
+    authStatus.innerText = "กรอกให้ครบ"
+    return
+  }
+
+  const email = username + "@dd.local"
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  })
+
+  if(error){
+    authStatus.innerText = error.message
+  }else{
+    authStatus.innerText = "สมัครสำเร็จ 🔥 ไปล็อกอินได้เลย"
+    showLogin()
+  }
+}
+async function login(){
+  const email = loginUser.value.trim() + "@dd.local"
+  const password = loginPass.value.trim()
+  if(!password) return authStatus.innerText="กรอกให้ครบ"
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if(error){
+    authStatus.innerText = error.message
+  }else{
+    current = data.user.id
+    localStorage.setItem("login", current)
+    logoutBtn.style.display = "inline-block"
+    go("home")
+  }
+}
+
+async function logout(){
+  await supabaseClient.auth.signOut()
+  localStorage.removeItem('login')
+  current=''
+  logoutBtn.style.display='none'
+  adminBtn.style.display='none'
+  go('auth')
+}
+/* ======================
+NAV
+====================== */
+function go(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  if(id==='history' && current) renderHistoryForUser()
+  menu.classList.remove('active')
+}
+
+function openAuth(){
+  if(current){
+    alert('มึงล็อกอินอยู่แล้วไอเหี้ย')
+  }else{
+    go('auth')
+    closeMenu()
+  }
+}
+
+/* ======================
+MENU
+====================== */
+function toggleMenu(){
+  const overlay = document.getElementById('menuOverlay')
+  const isOpen = menu.classList.toggle('active')
+  overlay.style.display = isOpen ? 'block' : 'none'
+}
+function closeMenu(){
+  menu.classList.remove('active')
+  document.getElementById('menuOverlay').style.display='none'
+}
+/* ======================
+BANNER SLIDE
+====================== */
+let slideIndex = 0
+const track = document.getElementById('bannerTrack')
+const slides = document.querySelectorAll('.banner-slide')
+const dotsBox = document.getElementById('dots')
+
+slides.forEach((_,i)=>{
+  const d=document.createElement('div')
+  d.className='dot'+(i===0?' active':'')
+  d.onclick=()=>goSlide(i)
+  dotsBox.appendChild(d)
+})
+
+function goSlide(i){
+  slideIndex=i
+  track.style.transform=`translateX(-${i*100}%)`
+  document.querySelectorAll('.dot').forEach((d,idx)=>{
+    d.classList.toggle('active',idx===i)
+  })
+}
+
+setInterval(()=>{
+  slideIndex=(slideIndex+1)%slides.length
+  goSlide(slideIndex)
+},3000)
+(async ()=>{
+  const { data } = await supabaseClient.auth.getSession()
+  if(data.session?.user){
+    current = data.session.user.id
+    localStorage.setItem("login", current)
+    logoutBtn.style.display = "inline-block"
+    go('home')
+  }else{
+    go('home')
+  }
+})()
+
+async function testInsert(){
+  
+  const { data } = await supabaseClient.auth.getSession()
+const user = data.session?.user
+if(!user) return alert('ยังไม่ล็อกอินจริง')
+
+  const { error } = await supabaseClient
+    .from('orders')
+    .insert({
+      user_id: user.id,
+      product: 'TEST',
+      price: 100,
+      status: 'test',
+      work_link: ''
+    })
+
+  if(error){
+    alert(error.message)
+  }else{
+    alert('เข้าแล้วไอ้เหี้ย 🎉')
+}
+}
+function openSendWork(){
+  const m = document.getElementById('sendWorkModal')
+  m.style.display = 'flex'
+  m.style.pointerEvents = 'auto'
+}
+
+function closeSendWork(){
+  const m = document.getElementById('sendWorkModal')
+  m.style.display = 'none'
+  m.style.pointerEvents = 'none'
+}
+fetch("https://sfnrtzjrbyhrwcuansbg.supabase.co/auth/v1/token?grant_type=password", {
+  method: "POST",
+  headers: {
+    "apikey": "ANON_KEY_มึง",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    email: "test@dd.local",
+    password: "12345678"
+  })
+})
+.then(r => r.json())
+.then(d => alert("FETCH OK"))
+.catch(e => alert("FETCH FAIL"));
+</script>
+ </body>    
+   </html>
