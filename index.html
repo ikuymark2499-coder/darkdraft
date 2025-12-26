@@ -774,20 +774,6 @@ function closeSendWork(){
   m.style.display = 'none'
   m.style.pointerEvents = 'none'
 }
-fetch("https://sfnrtzjrbyhrwcuansbg.supabase.co/auth/v1/token?grant_type=password", {
-  method: "POST",
-  headers: {
-    "apikey": "ANON_KEY_มึง",
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    email: "test@dd.local",
-    password: "12345678"
-  })
-})
-.then(r => r.json())
-.then(d => alert("FETCH OK"))
-.catch(e => alert("FETCH FAIL"));
 </script>
  </body>    
    </html>
